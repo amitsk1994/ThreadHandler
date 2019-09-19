@@ -11,7 +11,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Collections;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     Handler hand;
     int cnt;
     SeekBar seekbar;
+    ProgressBar pgr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                    EditText times=findViewById(R.id.editText);
+                    TextView times=findViewById(R.id.editText);
                     times.setText(i+" Times");
                     cnt=i;
             }
@@ -52,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        pgr=findViewById(R.id.progressBar);
+        pgr.setVisibility(View.INVISIBLE);
         hand=new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -62,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
                     case(DoWork.ends):
                         Log.d("str","Work Ended");
-                        EditText editmin=findViewById(R.id.editText3);
+                        pgr.setVisibility(View.INVISIBLE);
+                        TextView editmin=findViewById(R.id.editText3);
                         editmin.setText(msg.getData().getDouble("minimum")+"");
-                        EditText editmax=findViewById(R.id.editText4);
+                        TextView editmax=findViewById(R.id.editText4);
                         editmax.setText(msg.getData().getDouble("maximum")+"");
-                        EditText editavg=findViewById(R.id.editText5);
+                        TextView editavg=findViewById(R.id.editText5);
                         editavg.setText(msg.getData().getDouble("average")+"");
                         break;
 
@@ -90,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     return ;
                 }
                 es.execute(new DoWork());
+                pgr.setVisibility(View.VISIBLE);
+
             }
         });
     }
